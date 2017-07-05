@@ -20,13 +20,15 @@ sub bencode-file(Str $fname, $val) is export
 
 sub bdecode($data, $decodestr=False) is export
 {
-    return Bencode::Parse.new(:data($data), :decodestr($decodestr)).parse();
+    my Buf $bufdata = $data.WHAT.^name eq 'Str' ?? Buf.new($data.encode('UTF-8')) !! $data;
+
+    return Bencode::Parse.new(:val($bufdata), :decodestr($decodestr)).parse();
 }
 
 sub bdecode-file(Str $fname, $decodestr=False) is export
 {
     die if !$fname.IO.e;
-    my $val = slurp $fname, :bin;
+    my Buf $val = slurp $fname, :bin;
 
     return bdecode($val, $decodestr);
 }

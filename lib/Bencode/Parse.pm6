@@ -55,11 +55,11 @@ class Bencode::Parse
     has Buf $!bend = Buf.new('e'.encode('UTF-8'));
     has @!intvals = ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 
-    submethod BUILD(:$data, :$decodestr=False)
+    submethod BUILD(:$val, :$decodestr=False)
     {
-        $!data := $data.WHAT.^name eq 'Str' ?? tobytes $data !! $data;
+        $!data := $val;
         $!pos = 0;
-        $!len = $data.bytes;
+        $!len = $val.bytes;
         $!decodestr = $decodestr;
     }
 
@@ -101,6 +101,9 @@ class Bencode::Parse
         my Str $result;
         my Buf $bufresult;
         my Int $stop = indexBuf($.data, ':', $.pos);
+        # if $stop == 0 {
+            # die('Bad string');
+        # }
         my Int $len = substrBuf($.data, $.pos, $stop - $.pos).Int;
         # say "Data: ... Pos: $.pos Stop: $stop, Len $len";
         my Int $start = $.pos + $len.Str.chars + 1;

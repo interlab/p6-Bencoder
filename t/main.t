@@ -1,3 +1,5 @@
+#!perl6
+
 use v6;
 use lib 'lib';
 use Test;
@@ -35,4 +37,4 @@ subtest {
     is bdecode('d5:qwertl10:qwertyuiopee', True), (qwert => ('qwertyuiop',)), 'd5:qwertl10:qwertyuiopee == {qwert => (\'qwertyuiop\',)}';
 }, 'bdecode test';
 
-done;
+done-testing;

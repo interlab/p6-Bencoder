@@ -8,6 +8,7 @@
         "Innokentiy Shniperson"
     ],
     "provides" : {
+        "Bencode" : "lib/Bencode.pm6",
         "Bencode::Dump" : "lib/Bencode/Dump.pm6",
         "Bencode::Parse" : "lib/Bencode/Parse.pm6"
     },

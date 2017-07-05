@@ -4,12 +4,10 @@ use v6;
 use lib 'lib';
 use Test;
 
-use Bencode::Dump;
-use Bencode::Parse;
+use Bencode;
 use Digest::SHA;
 use experimental :pack;
 
-# ok(1);
 
 # subtest {
     # my $d = IO::Path.new($?FILE.IO.absolute.IO.dirname).dirname;

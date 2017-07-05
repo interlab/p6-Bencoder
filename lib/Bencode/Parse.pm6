@@ -52,23 +52,13 @@ class Bencode::Parse
     has Int $.pos;
     has Int $.len;
     has Bool $!decodestr = False;
-
-    # has Buf $!bint = Buf.new('i'.encode('UTF-8'));
-    # has Buf $!blist = Buf.new('l'.encode('UTF-8'));
-    # has Buf $!bdict = Buf.new('d'.encode('UTF-8'));
     has Buf $!bend = Buf.new('e'.encode('UTF-8'));
     has @!intvals = ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 
-    # https://docs.perl6.org/syntax/Object%20Construction
     submethod BUILD(:$data, :$decodestr=False)
     {
-        $!data := $data;
+        $!data := $data.WHAT.^name eq 'Str' ?? tobytes $data !! $data;
         $!pos = 0;
-        # $!isbin = $data.WHAT.^name ne 'Str';
-        # say $data.WHAT.^name, ' ', $!isbin;
-        # if $!isbin {
-            # $!data = $!data.decode('utf-8');
-        # }
         $!len = $data.bytes;
         $!decodestr = $decodestr;
     }
@@ -120,7 +110,7 @@ class Bencode::Parse
         # if $utf8 {
             # $result = $bufresult.decode('UTF-8');
             $result = try $bufresult.decode('UTF-8');
-            if ($!) {
+            if $! {
                 $result = '|...|';
             }
         }
@@ -194,19 +184,3 @@ class Bencode::Parse
         return %result;
     }
 }
-
-sub bdecode($data, $decodestr=False) is export
-{
-    my Buf $bufdata = $data.WHAT.^name eq 'Str' ?? tobytes $data !! $data;
-
-    return Bencode::Parse.new(:data($bufdata), :decodestr($decodestr)).parse();
-}
-
-sub bdecode-file(Str $fname, $decodestr=False) is export
-{
-    die if !$fname.IO.e;
-    my $val = slurp $fname, :bin;
-
-    return bdecode($val, $decodestr);
-}
-

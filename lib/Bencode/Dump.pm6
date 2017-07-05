@@ -70,19 +70,3 @@ class Bencode::Dump
         $!stack.push(tobytes('e'));
     }
 }
-
-sub bencode($data, $decode=False) is export
-{
-    if $decode {
-        return Bencode::Dump.new(:data($data)).benc-dump().decode;
-    }
-    else {
-        return Bencode::Dump.new(:data($data)).benc-dump();
-    }
-}
-
-sub bencode-file(Str $fname, $val) is export
-{
-    spurt $fname, bencode($val), :bin;
-}
-

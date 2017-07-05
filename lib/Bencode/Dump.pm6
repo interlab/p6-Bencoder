@@ -1,8 +1,4 @@
 
-# 31.10.2016 - 04.11.2016 - 30.06.2017
-# https://docs.perl6.org/type/Blob
-# https://github.com/rakudo/rakudo/blob/nom/src/core/Buf.pm
-
 multi sub tobytes(Buf $val)
 {
     return $val;

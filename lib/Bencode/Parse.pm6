@@ -1,6 +1,4 @@
 
-# 27.10.2016 - 04.11.2016
-
 multi sub tobytes(Buf $val)
 {
     return $val;
@@ -123,7 +121,6 @@ class Bencode::Parse
         my Int $start = $.pos + $len.Str.chars + 1;
         # say $start, ' ', $len;
         $bufresult = $.data.subbuf($start, $len);
-		# say $bufresult.decode;
         if $!decodestr || $utf8 {
         # if $utf8 {
             # $result = $bufresult.decode('UTF-8');
@@ -195,7 +192,6 @@ class Bencode::Parse
         my %result;
         while $.data.subbuf($.pos, 1) ne $!bend {
             my $key = self.bdecodeStr(True);
-			# say $key;
             %result{$key} = self.parse2();
         }
         $!pos += 1;

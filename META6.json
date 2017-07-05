@@ -8,20 +8,20 @@
         "Innokentiy Shniperson"
     ],
     "provides" : {
-		"Bencode::Dump" : "lib/Bencode/Dump.pm6",
-		"Bencode::Parse" : "lib/Bencode/Parse.pm6"
+        "Bencode::Dump" : "lib/Bencode/Dump.pm6",
+        "Bencode::Parse" : "lib/Bencode/Parse.pm6"
     },
     "depends" : [
         "Digest::SHA"
     ],
     "support" : {
-		"bugtracker" : "https://github.com/interlab/perl6-bencode/issues"
-	},
-	"tags" : [
-		"bencode",
-		"bdecode",
-		"bittorrent",
-		"torrent"
-	],
+        "bugtracker" : "https://github.com/interlab/perl6-bencode/issues"
+    },
+    "tags" : [
+        "bencode",
+        "bdecode",
+        "bittorrent",
+        "torrent"
+    ],
     "source-url" : "git://github.com/interlab/perl6-bencode"
 }

@@ -46,11 +46,6 @@ sub substrBuf(Buf $data, Int $pos, Int $len)
     return $data.subbuf($pos, $len).decode('UTF-8');
 }
 
-sub bytestostring(Buf $val)
-{
-    return $val.decode('UTF-8');
-}
-
 class Bencode::Parse
 {
     has $.data;
@@ -211,8 +206,7 @@ sub bdecode-file(Str $fname, $decodestr=False) is export
 {
     die if !$fname.IO.e;
     my $val = slurp $fname, :bin;
-    my $bd = bdecode($val, $decodestr);
 
-    return $bd;
+    return bdecode($val, $decodestr);
 }
 

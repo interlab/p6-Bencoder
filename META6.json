@@ -15,7 +15,7 @@
         "Digest::SHA"
     ],
     "support" : {
-        "bugtracker" : "https://github.com/interlab/perl6-bencode/issues"
+        "bugtracker" : "https://github.com/interlab/perl6-Bencode/issues"
     },
     "tags" : [
         "bencode",
@@ -23,5 +23,5 @@
         "bittorrent",
         "torrent"
     ],
-    "source-url" : "git://github.com/interlab/perl6-bencode"
+    "source-url" : "git://github.com/interlab/perl6-Bencode"
 }

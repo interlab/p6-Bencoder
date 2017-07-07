@@ -39,7 +39,7 @@ class Bencode::Parse
     has Int $.len;
     has Bool $!decodestr = False;
     has Buf $!bend = tobytes 'e';
-    has @!intvals = ('1', '2', '3', '4', '5', '6', '7', '8', '9');
+    has @!intvals = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
 
     submethod BUILD(:$data, :$decodestr=False)
     {
@@ -128,7 +128,8 @@ class Bencode::Parse
         }
         my $snum = substrBuf($.data, $!pos, $end - $!pos);
         my $result = $snum.Int;
-        if $snum != $result {
+        # say 'Int -->', $end - $!pos, ' --> ', $result.Str.chars;
+        if $snum != $result || $end - $!pos > $result.Str.chars {
             die 'Leading zeroes or negative zero detected ' ~ $snum;
         }
         $!pos = $end + 1;

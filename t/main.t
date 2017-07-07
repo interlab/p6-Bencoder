@@ -11,15 +11,12 @@ use experimental :pack;
 subtest {
     # normalize file path
     my IO $p = $?FILE.IO.absolute.IO.parent.parent;
-    my $sep = $p.SPEC.dir-sep;
-    my $path = $p.add('examples/ubuntu-17.04-desktop-amd64.iso.torrent');
-    $path = $path.path.subst('/', $sep) if $sep ne '/';
+    my Str $path = $p.add('examples').add('ubuntu-17.04-desktop-amd64.iso.torrent').Str;
     my %fi = bdecode-file $path;
     my $sha1-info = sha1(bencode(%fi{'info'})).unpack('H*').uc;
     ok $sha1-info eq '59066769B9AD42DA2E508611C33D7C4480B3857B', 'file info-hash compare';
 
-    # my $path2 = $p.add('examples/mt.torrent');
-    # $path2 = $path2.path.subst('/', $sep) if $sep ne '/';
+    # my Str $path2 = $p.add('examples').add('mt.torrent').Str;
     # my %fi2 = bdecode-file $path2;
     # my $sha1-info2 = sha1(bencode(%fi2<info>)).unpack('H*').uc;
     # is $sha1-info2, '52F697ADF873006C87FA5D47F8447CC6EFCE1B49', 'file2 info-hash compare';

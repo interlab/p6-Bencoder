@@ -1,18 +1,4 @@
-
-multi sub tobytes(Buf $val)
-{
-    return $val;
-}
-
-multi sub tobytes(Int $val)
-{
-    return Buf.new(Str($val).encode('UTF-8'));
-}
-
-multi sub tobytes(Str $val)
-{
-    return Buf.new($val.encode('UTF-8'));
-}
+use Bencode::Util;
 
 # helper function via Str.index
 sub indexBuf(Buf $data, Str $key, Int $position)

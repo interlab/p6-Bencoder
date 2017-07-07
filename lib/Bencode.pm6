@@ -2,6 +2,7 @@ unit module Bencode;
 
 use Bencode::Dump;
 use Bencode::Parse;
+use Bencode::Util;
 
 sub bencode($data, $decode=False) is export
 {
@@ -20,7 +21,7 @@ sub bencode-file(Str $fname, $val) is export
 
 sub bdecode($data, Bool $decodestr=False) is export
 {
-    my Buf $bufdata = $data.WHAT.^name eq 'Str' ?? Buf.new($data.encode('UTF-8')) !! $data;
+    my Buf $bufdata = tobytes $data;
 
     return Bencode::Parse.new(data => $bufdata, decodestr => $decodestr).parse();
 }

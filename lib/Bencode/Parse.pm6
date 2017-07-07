@@ -55,19 +55,20 @@ class Bencode::Parse
     has Buf $!bend = Buf.new('e'.encode('UTF-8'));
     has @!intvals = ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 
-    submethod BUILD(:$val, :$decodestr=False)
+    submethod BUILD(:$data, :$decodestr=False)
     {
-        $!data := $val;
+        $!data := $data;
         $!pos = 0;
-        $!len = $val.bytes;
+        $!len = $data.bytes;
         $!decodestr = $decodestr;
     }
 
     method parse()
     {
         my $result = self.parse2();
-        if $.pos < $.len - 1 {
-            die('Found multiple entities outside list or dict definitions: ' ~ $.data.substr(0, 10));
+        # say '$.len - 1 ', $.len - 1, ' len: ',  $.len, ' pos: ', $.pos, ' == ', $.pos == $.len;
+        if $.pos < $.len {
+            die('Found multiple entities outside list or dict definitions: ' ~ substrBuf($.data, 0, 10));
         }
 
         return $result;
@@ -100,14 +101,14 @@ class Bencode::Parse
         # d8:announce22
         my Str $result;
         my Buf $bufresult;
-        my Int $stop = indexBuf($.data, ':', $.pos);
-        # if $stop == 0 {
-            # die('Bad string');
-        # }
+        my $stop = indexBuf($.data, ':', $.pos);
+        if !$stop.defined {
+            die('Bad string');
+        }
         my Int $len = substrBuf($.data, $.pos, $stop - $.pos).Int;
-        # say "Data: ... Pos: $.pos Stop: $stop, Len $len";
+        # say "Data: ... Pos: $.pos Stop: $stop, Len $len, ", $stop - $.pos;
         my Int $start = $.pos + $len.Str.chars + 1;
-        # say $start, ' ', $len;
+        # say 'start: ', $start;
         $bufresult = $.data.subbuf($start, $len);
         if $!decodestr || $utf8 {
         # if $utf8 {
@@ -122,6 +123,7 @@ class Bencode::Parse
             die('Bad string: '); # ~ substrBuf($.data, $.pos, $len + 1 + Str($len).chars + 10) ~ ' Pos: ' ~ $.pos ~ ' Chars: ' ~ $result.chars ~ ' Len: ' ~ $len ~ ' Result: "' ~ $result ~ '"')
         }
         $!pos = $start + $bufresult.bytes;
+        # say 'pos: ', $!pos;
         if $!decodestr || $utf8 {
         # if $utf8 {
             # # say 'bdecodeStr() :: result: "', $result, '" start: ', $start, ' stop: ', $.pos, ' len: ', $len;

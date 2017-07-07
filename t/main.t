@@ -26,6 +26,9 @@ subtest {
 }, 'bencode test';
 
 subtest {
+    is bdecode('4:keks', True), 'keks', '4:keks == keks';
+    dies-ok { bdecode('4:kek', True) }, "Bad string dies";
+    dies-ok { bdecode('4:kekss', True) }, "Big string dies";
     is bdecode('i-42e'), -42, 'i-42e == -42';
     is bdecode('le'), [], 'le == []';
     is bdecode('le'), [], 'le == []';

@@ -123,9 +123,8 @@ class Bencode::Parse
     {
         $!pos += 1;
         my $end = indexBuf($.data, 'e', $!pos);
-        if $!pos == $end {
-            die 'Empty integer';
-        }
+        die 'Bad integer' if !$end.defined;
+        die 'Empty integer' if $!pos == $end;
         my $snum = substrBuf($.data, $!pos, $end - $!pos);
         my $result = $snum.Int;
         # say 'Int -->', $end - $!pos, ' --> ', $result.Str.chars;

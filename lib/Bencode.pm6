@@ -27,7 +27,7 @@ sub bdecode($data, Bool $decodestr=False) is export
 
 sub bdecode-file(Str $fname, Bool $decodestr=False) is export
 {
-    die if !$fname.IO.e;
+    die("File $fname not found!") if !$fname.IO.e;
     my Buf $val = slurp $fname, :bin;
 
     return bdecode($val, $decodestr);

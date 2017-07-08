@@ -40,6 +40,7 @@ subtest {
     is bdecode('i-42e'), -42, 'i-42e == -42';
     dies-ok { bdecode('i-0111e') }, "Bad num i-0111e dies";
     dies-ok { bdecode('i-0e') }, "Bad num i-0e dies";
+    dies-ok { bdecode('ie') }, "Bad num \"ie\" dies";
     is bdecode('le'), [], 'le == []';
     is bdecode('l4:spami42ee', True), ('spam', 42), 'l4:spami42ee == (\'spam\', 42)';
     is bdecode('de'), {}, 'de == {}';

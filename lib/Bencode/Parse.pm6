@@ -1,7 +1,7 @@
 use Bencode::Util;
 
 # helper function via Str.index
-sub indexBuf(Buf $data, Str $key, Int $position)
+sub indexBuf(Buf $data, Str $key, Int $position --> Int)
 {
     my Int $find = -1;
     my Int $max = $data.bytes;
@@ -22,7 +22,7 @@ sub indexBuf(Buf $data, Str $key, Int $position)
 }
 
 # helper function via Str.substr
-sub substrBuf(Buf $data, Int $pos, Int $len)
+sub substrBuf(Buf $data, Int $pos, Int $len --> Str)
 {
     # say 'substrBuf() :: ', $len, ' ', $pos, ' ', $data.subbuf($pos, $len), ' ', $data.subbuf($pos, $len).decode('UTF-8');
     return $data.subbuf($pos, $len).decode('UTF-8');
@@ -35,7 +35,7 @@ class Bencode::Parse
     has Int $.len;
     has Bool $!decodestr = False;
     has Buf $!bend = tobytes 'e';
-    has @!intvals = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+    has @!intvals = '0', '1', '2', '3', '4', '5', '6', '7', '8', '9';
 
     submethod BUILD(:$data, :$decodestr=False)
     {
@@ -78,13 +78,12 @@ class Bencode::Parse
     method bdecodeStr(Bool $utf8=False)
     {
         my Str $result;
-        my Buf $bufresult;
-        my $stop = indexBuf($.data, ':', $!pos);
+        my Int $stop = indexBuf($.data, ':', $!pos);
         die 'Bad string' if !$stop.defined;
         my Int $len = substrBuf($.data, $!pos, $stop - $!pos).Int;
         my Int $start = $!pos + $len.Str.chars + 1;
         # say "Data: Pos: $!pos Stop: $stop, Len $len, ", $stop - $!pos, ' start: ', $start;
-        $bufresult = $.data.subbuf($start, $len);
+        my Buf $bufresult = $.data.subbuf($start, $len);
         if $!decodestr || $utf8 {
         # if $utf8 {
             # $result = $bufresult.decode('UTF-8');
@@ -116,10 +115,10 @@ class Bencode::Parse
     method bdecodeInt()
     {
         $!pos += 1;
-        my $end = indexBuf($.data, 'e', $!pos);
+        my Int $end = indexBuf($.data, 'e', $!pos);
         die 'Bad integer' if !$end.defined;
         die 'Empty integer' if $!pos == $end;
-        my $snum = substrBuf($.data, $!pos, $end - $!pos);
+        my Str $snum = substrBuf($.data, $!pos, $end - $!pos);
         my $result = $snum.Int;
         # say 'Int -->', $end - $!pos, ' --> ', $result.Str.chars;
         if $snum != $result || $end - $!pos > $result.Str.chars {

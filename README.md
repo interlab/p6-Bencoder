@@ -45,6 +45,6 @@ use experimental :pack;
 
 my $path = 'ubuntu-17.04-desktop-amd64.iso.torrent'; # Change your path
 my %tfile = bdecode-file $path;
-my $sha1-info = sha1(bencode(%tfile<info>)).unpack('H*').uc;
-say $sha1-info; # 59066769B9AD42DA2E508611C33D7C4480B3857B
+my $info-hash = sha1(bencode(%tfile<info>)).unpack('H*').uc;
+say $info-hash; # 59066769B9AD42DA2E508611C33D7C4480B3857B
 ```

@@ -18,11 +18,7 @@ sub indexBuf(Buf $data, Str $key, Int $position)
         }
     }
 
-    if $find == -1 {
-        return Nil;
-    } else {
-        return $find;
-    }
+    return $find == -1 ?? Nil !! $find;
 }
 
 # helper function via Str.substr
@@ -84,9 +80,7 @@ class Bencode::Parse
         my Str $result;
         my Buf $bufresult;
         my $stop = indexBuf($.data, ':', $!pos);
-        if !$stop.defined {
-            die('Bad string');
-        }
+        die 'Bad string' if !$stop.defined;
         my Int $len = substrBuf($.data, $!pos, $stop - $!pos).Int;
         my Int $start = $!pos + $len.Str.chars + 1;
         # say "Data: Pos: $!pos Stop: $stop, Len $len, ", $stop - $!pos, ' start: ', $start;

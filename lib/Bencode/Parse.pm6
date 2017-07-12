@@ -5,7 +5,7 @@ sub indexBuf(Buf $data, Str $key, Int $position --> Int)
 {
     my Int $find = -1;
     my Int $max = $data.bytes;
-    my Buf $k = tobytes $key;
+    my Buf $k = tobuf $key;
 
     if $position >= $max {
         return Nil;
@@ -30,12 +30,12 @@ sub substrBuf(Buf $data, Int $pos, Int $len --> Str)
 
 class Bencode::Parse
 {
-    has Buf $.data;
+    has Buf $!data;
     has Int $!pos = 0;
-    has Int $.len;
-    has Bool $!decodestr = False;
-    has Buf $!bend = tobytes 'e';
-    has @!intvals = '0', '1', '2', '3', '4', '5', '6', '7', '8', '9';
+    has Int $!len;
+    has Bool $!decodestr;
+    has Buf $!bend = tobuf 'e';
+    has @!intvals = '0'..'9';
 
     submethod BUILD(:$data, :$decodestr=False)
     {
@@ -47,9 +47,9 @@ class Bencode::Parse
     method parse()
     {
         my $result = self.parse2();
-        # say '$.len - 1 ', $.len - 1, ' len: ',  $.len, ' pos: ', $!pos, ' == ', $!pos == $.len;
-        if $!pos < $.len {
-            die('Found multiple entities outside list or dict definitions: ' ~ substrBuf($.data, 0, 10));
+        # say '$!len - 1 ', $!len - 1, ' len: ',  $!len, ' pos: ', $!pos, ' == ', $!pos == $!len;
+        if $!pos < $!len {
+            die('Found multiple entities outside list or dict definitions: ' ~ substrBuf($!data, 0, 10));
         }
 
         return $result;
@@ -57,8 +57,8 @@ class Bencode::Parse
 
     method parse2()
     {
-        my $t = substrBuf($.data, $!pos, 1);
-        # say 'parse2() :: ', $t; # , ' ', $t.WHAT, ' ', '1' eq $t, ' ', $!pos, ' ';
+        my Str $t = substrBuf($!data, $!pos, 1);
+        # dd 'parse2():: ', $t;
 
         if $t (elem) @!intvals {
             return self.bdecodeStr();
@@ -68,7 +68,7 @@ class Bencode::Parse
             when 'i' { return self.bdecodeInt(); } 
             when 'l' { return self.bdecodeList(); }
             when 'd' { return self.bdecodeDict(); }
-            default  { die "$t - huh?"; }
+            default  { die "{$t.perl} - huh?"; }
         }
     }
 
@@ -77,34 +77,20 @@ class Bencode::Parse
     # 4:spam
     method bdecodeStr(Bool $utf8=False)
     {
-        my Str $result;
-        my Int $stop = indexBuf($.data, ':', $!pos);
+        my Int $stop = indexBuf($!data, ':', $!pos);
         die 'Bad string' if !$stop.defined;
-        my Int $len = substrBuf($.data, $!pos, $stop - $!pos).Int;
+        my Int $len = substrBuf($!data, $!pos, $stop - $!pos).Int;
         my Int $start = $!pos + $len.Str.chars + 1;
         # say "Data: Pos: $!pos Stop: $stop, Len $len, ", $stop - $!pos, ' start: ', $start;
-        my Buf $bufresult = $.data.subbuf($start, $len);
-        if $!decodestr || $utf8 {
-        # if $utf8 {
-            # $result = $bufresult.decode('UTF-8');
-            $result = try $bufresult.decode('UTF-8');
-            if $! {
-                $result = '|...|';
-            }
-        }
-
+        my Buf $bufresult = $!data.subbuf($start, $len);
         if $bufresult.bytes != $len {
-            die('Bad string: '); # ~ substrBuf($.data, $!pos, $len + 1 + Str($len).chars + 10) ~ ' Pos: ' ~ $!pos ~ ' Chars: ' ~ $result.chars ~ ' Len: ' ~ $len ~ ' Result: "' ~ $result ~ '"')
+            die('Bad string.');
         }
         $!pos = $start + $bufresult.bytes;
-        # say 'pos: ', $!pos;
-        if $!decodestr || $utf8 {
-        # if $utf8 {
-            # # say 'bdecodeStr() :: result: "', $result, '" start: ', $start, ' stop: ', $!pos, ' len: ', $len;
-            return $result;
-        } else {
-            return $bufresult;
-        }
+        my Bool $to-str = $!decodestr || $utf8;
+        my Str $strresult = $to-str ?? $bufresult.decode('UTF-8') !! Nil;
+
+        return $to-str ?? $strresult !! $bufresult;
     }
 
     # Целое число: i<число в десятичной системе счисления>e
@@ -115,11 +101,11 @@ class Bencode::Parse
     method bdecodeInt()
     {
         $!pos += 1;
-        my Int $end = indexBuf($.data, 'e', $!pos);
+        my Int $end = indexBuf($!data, 'e', $!pos);
         die 'Bad integer' if !$end.defined;
         die 'Empty integer' if $!pos == $end;
-        my Str $snum = substrBuf($.data, $!pos, $end - $!pos);
-        my $result = $snum.Int;
+        my Str $snum = substrBuf($!data, $!pos, $end - $!pos);
+        my Int $result = $snum.Int;
         # say 'Int -->', $end - $!pos, ' --> ', $result.Str.chars;
         if $snum != $result || $end - $!pos > $result.Str.chars {
             die 'Leading zeroes or negative zero detected ' ~ $snum;
@@ -136,9 +122,8 @@ class Bencode::Parse
     {
         $!pos += 1;
         my @result;
-        while $.data.subbuf($!pos, 1) ne $!bend {
-            my $res = self.parse2();
-            @result.push($res);
+        while $!data.subbuf($!pos, 1) ne $!bend {
+            @result.push: self.parse2();
         }
         $!pos += 1;
 
@@ -154,7 +139,7 @@ class Bencode::Parse
     {
         $!pos += 1;
         my %result;
-        while $.data.subbuf($!pos, 1) ne $!bend {
+        while $!data.subbuf($!pos, 1) ne $!bend {
             my $key = self.bdecodeStr(True);
             %result{$key} = self.parse2();
         }

@@ -2,7 +2,7 @@
     "perl" : "6.c",
     "name" : "Bencode",
     "license" : "Artistic-2.0",
-    "version" : "0.2.4",
+    "version" : "0.5.0",
     "description" : "Encode and Decode Bencoding data",
     "authors" : [
         "Innokentiy Shniperson"
@@ -11,7 +11,8 @@
         "Bencode" : "lib/Bencode.pm6",
         "Bencode::Dump" : "lib/Bencode/Dump.pm6",
         "Bencode::Parse" : "lib/Bencode/Parse.pm6",
-        "Bencode::Util" : "lib/Bencode/Util.pm6"
+        "Bencode::Util" : "lib/Bencode/Util.pm6",
+        "Bencode::TorrentInfo" : "lib/Bencode/TorrentInfo.pm6"
     },
     "depends" : [
         "Digest::SHA"

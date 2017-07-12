@@ -5,6 +5,7 @@ use lib 'lib';
 use Test;
 
 use Bencode;
+use Bencode::TorrentInfo;
 use Digest::SHA;
 use experimental :pack;
 
@@ -16,11 +17,42 @@ subtest {
     my $sha1-info = sha1(bencode(%fi{'info'})).unpack('H*').uc;
     ok $sha1-info eq '59066769B9AD42DA2E508611C33D7C4480B3857B', 'file info-hash compare';
 
-    # my Str $path2 = $p.add('mt.torrent').Str;
-    # my %fi2 = bdecode-file $path2;
-    # my $sha1-info2 = sha1(bencode(%fi2<info>)).unpack('H*').uc;
-    # is $sha1-info2, '52F697ADF873006C87FA5D47F8447CC6EFCE1B49', 'file2 info-hash compare';
-}, 'sha1 info-hash check';
+    $path = $p.add('mt.torrent').Str;
+    if $path.IO.e {
+        %fi = bdecode-file $path;
+        $sha1-info = sha1(bencode(%fi<info>)).unpack('H*').uc;
+        is $sha1-info, '52F697ADF873006C87FA5D47F8447CC6EFCE1B49', 'file2 info-hash compare';
+    }
+
+    $path = $p.add('plesen.torrent').Str;
+    if $path.IO.e {
+        %fi = bdecode-file $path;
+        $sha1-info = sha1(bencode(%fi<info>)).unpack('H*').uc;
+        is $sha1-info, 'C2582EF39802CB8FD3930F044BA4672965D1837E', 'file3 info-hash compare';
+    }
+}, 'sha1 info-hash test';
+
+subtest {
+    my IO $p = $?FILE.IO.absolute.IO.parent.parent.add('examples');
+    my Str $path = $p.add('ubuntu-17.04-desktop-amd64.iso.torrent').Str;
+    my $tor-info = Bencode::TorrentInfo.new(path => $path);
+    is $tor-info.info-hash, '59066769B9AD42DA2E508611C33D7C4480B3857B', '1. TorrentInfo info-hash compare';
+    is $tor-info.num-files, 1, '1. TorrentInfo count files';
+
+    $path = $p.add('mt.torrent').Str;
+    if $path.IO.e {
+        $tor-info = Bencode::TorrentInfo.new(path => $path);
+        is $tor-info.info-hash, '52F697ADF873006C87FA5D47F8447CC6EFCE1B49', '2. TorrentInfo info-hash compare';
+        is $tor-info.num-files, 45, '2. TorrentInfo count files';
+    }
+
+    $path = $p.add('plesen.torrent').Str;
+    if $path.IO.e {
+        $tor-info = Bencode::TorrentInfo.new(path => $path);
+        is $tor-info.info-hash, 'C2582EF39802CB8FD3930F044BA4672965D1837E', '3. TorrentInfo info-hash compare';
+        is $tor-info.num-files, 1179, '3. TorrentInfo count files';
+    }
+}, 'TorrentInfo test';
 
 subtest {
     my $v = {'mydata' => ('scooter', 100500, 888), 'testint' => 100500, 'Василий Уткин' => 567};

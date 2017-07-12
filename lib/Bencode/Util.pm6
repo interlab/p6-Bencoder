@@ -1,15 +1,15 @@
 
-multi sub tobytes(Buf $val) is export
+multi sub tobuf(Buf $val --> Buf) is export
 {
-    return $val;
+    $val;
 }
 
-multi sub tobytes(Int $val) is export
+multi sub tobuf(Int $val --> Buf) is export
 {
-    return Buf.new(Str($val).encode('UTF-8'));
+    Buf.new(Str($val).encode('UTF-8'));
 }
 
-multi sub tobytes(Str $val) is export
+multi sub tobuf(Str $val --> Buf) is export
 {
-    return Buf.new($val.encode('UTF-8'));
+    Buf.new($val.encode('UTF-8'));
 }

@@ -38,6 +38,10 @@ subtest {
     my $tor-info = Bencode::TorrentInfo.new(path => $path);
     is $tor-info.info-hash, '59066769B9AD42DA2E508611C33D7C4480B3857B', '1. TorrentInfo info-hash compare';
     is $tor-info.num-files, 1, '1. TorrentInfo count files';
+    is $tor-info.announce, 'http://torrent.ubuntu.com:6969/announce', '1. TorrentInfo announce check';
+    is $tor-info.announce-list,
+        ('http://torrent.ubuntu.com:6969/announce', 'http://ipv6.torrent.ubuntu.com:6969/announce'),
+        '1. TorrentInfo announce check';
 
     $path = $p.add('mt.torrent').Str;
     if $path.IO.e {

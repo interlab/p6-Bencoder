@@ -49,14 +49,19 @@ class Bencode::TorrentInfo
         if ! (%!data<info><files>:exists) {
             $fCount = 1;
             $fSize = %!data<info><length>;
-            @fList.push({name => escape-html(%!data<info><name>.decode), size => $fSize})
+            @fList.push({
+                name => escape-html(%!data<info><name>.decode),
+                size => $fSize
+            });
         }
         # multi
         else {
             $fCount = %!data<info><files>.elems;
             for %!data<info><files>.values -> $f {
                 $fSize += $f<length>;
-                my Str $fName = escape-html($f<path>.map({$_.decode}).join('/').subst(/ ^\/ /, '')); # strip '/'
+                my Str $fName = escape-html(
+                    $f<path>.map({$_.decode}).join('/').subst(/ ^\/ /, '')
+                );
                 @fList.push({name => $fName, size => $f<length>});
             }
             @fList = @fList.sort({$^a<name> cmp $^b<name>});
@@ -78,7 +83,7 @@ class Bencode::TorrentInfo
     {
         my @res;
         if %!data<announce>:exists {
-            escape-html(@res.push(%!data<announce>.decode));
+            @res.push(escape-html(%!data<announce>.decode));
         }
         # dd %!data<announce-list>;
         if %!data<announce-list>:exists {
@@ -92,10 +97,11 @@ class Bencode::TorrentInfo
     }
 }
 
-# my $b = Bencode::TorrentInfo.new(path => 'F:\b\perl6-Bencode\examples\ubuntu-17.04-desktop-amd64.iso.torrent');
-# say $b.info-hash;
-# say 'announce ', $b.announce;
-# .say for $b.announce-list;
-# say 'Файлов: ', $b.num-files;
-# say $_<name> for $b.file-list<files>.values;
-
+# use Bencode::TorrentInfo;
+# my $path = 'F:\b\perl6-Bencode\examples\ubuntu-17.04-desktop-amd64.iso.torrent';
+# my $tor-info = Bencode::TorrentInfo.new(path => $path);
+# say $tor-info.info-hash;
+# say 'announce ', $tor-info.announce;
+# .say for $tor-info.announce-list;
+# say 'Файлов: ', $tor-info.num-files;
+# say $_<name> for $tor-info.file-list<files>.values;

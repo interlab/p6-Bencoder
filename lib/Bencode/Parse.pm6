@@ -60,11 +60,8 @@ class Bencode::Parse
         my Str $t = substrBuf($!data, $!pos, 1);
         # dd 'parse2():: ', $t;
 
-        if $t (elem) @!intvals {
-            return self.bdecodeStr();
-        }
-
         given $t {
+            when * (elem) @!intvals { return self.bdecodeStr(); }
             when 'i' { return self.bdecodeInt(); } 
             when 'l' { return self.bdecodeList(); }
             when 'd' { return self.bdecodeDict(); }

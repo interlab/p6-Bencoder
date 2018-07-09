@@ -7,9 +7,9 @@ use Bencode::Util;
 sub bencode($data, $decode=False) is export
 {
     if $decode {
-        return Bencode::Dump.new(:data($data)).benc-dump().decode;
+        return Bencode::Dump.new(:$data).benc-dump().decode;
     } else {
-        return Bencode::Dump.new(:data($data)).benc-dump();
+        return Bencode::Dump.new(:$data).benc-dump();
     }
 }
 
@@ -22,7 +22,7 @@ sub bdecode($data, Bool $decodestr=False) is export
 {
     my Buf $bufdata = tobuf $data;
 
-    return Bencode::Parse.new(data => $bufdata, decodestr => $decodestr).parse();
+    return Bencode::Parse.new(data => $bufdata, :$decodestr).parse();
 }
 
 sub bdecode-file(Str $fname) is export

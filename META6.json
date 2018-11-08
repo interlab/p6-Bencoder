@@ -2,7 +2,7 @@
     "perl" : "6.c",
     "name" : "Bencode",
     "license" : "Artistic-2.0",
-    "version" : "0.5.1",
+    "version" : "0.5.2",
     "description" : "Encode and Decode Bencoding data",
     "authors" : [
         "Innokentiy Shniperson"

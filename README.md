@@ -15,8 +15,8 @@ say $bdata; # d3:bar4:spam3:fooi42ee
 ### Encode torrent file
 ```perl6
 use Bencoder;
-my $path = 'F:\examples\ubuntu-17.04-desktop-amd64.iso.torrent'; # Change your path
-my $new-path = 'F:\examples\ubuntu-19.04-desktop-amd64.iso.torrent'; # Change your path
+my $path = 'F:\examples\ubuntu-19.04-desktop-amd64.iso.torrent';
+my $new-path = 'F:\examples\ubuntu-19.04-copy.torrent';
 my %data = bdecode-file $path;
 say %data<announce>.decode; # http://torrent.ubuntu.com:6969/announce
 bencode-file($new-path, %data); # Dump file to new path

@@ -7,7 +7,6 @@ use Test;
 use Bencoder;
 use Bencoder::TorrentInfo;
 use Digest::SHA1::Native;
-use experimental :pack;
 
 subtest {
     # normalize file path

@@ -1,4 +1,4 @@
-# perl6-Bencoder
+# Bencoder
 Encode and decode bencoding data (torrent files) lib for Perl 6
 
 ## Install

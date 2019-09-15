@@ -1,7 +1,7 @@
 {
   "name": "Bencoder",
   "description": "Encode and Decode Bencoding data",
-  "version": "0.6",
+  "version": "0.6.0",
   "perl": "6.*",
   "authors": [
     "V. N."

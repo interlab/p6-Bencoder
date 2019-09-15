@@ -1,6 +1,5 @@
 use Bencoder;
-use Digest::SHA;
-use experimental :pack;
+use Digest::SHA1::Native;
 
 # htmlspecialchars
 # https://github.com/moznion/p6-HTML-Escape
@@ -25,7 +24,7 @@ class Bencoder::TorrentInfo
     {
         $bin
             ?? sha1(bencode(%!data<info>))
-            !! sha1(bencode(%!data<info>)).unpack('H*').uc;
+            !! sha1-hex(bencode(%!data<info>)).uc;
     }
 
     method num-files(--> Int)

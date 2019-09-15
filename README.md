@@ -2,7 +2,7 @@
 Encode and decode bencoding data (torrent files) lib for Perl 6
 
 ## Install
-`zef -v install https://github.com/interlab/perl6-Bencoder.git`
+`zef -v install https://github.com/interlab/p6-Bencoder.git`
 
 ## Examples
 ### Encode data

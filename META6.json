@@ -18,7 +18,7 @@
     "Bencoder::Util": "lib/Bencoder/Util.pm6"
   },
   "support": {
-    "bugtracker": "https://github.com/interlab/perl6-Bencoder/issues"
+    "bugtracker": "https://github.com/interlab/p6-Bencoder/issues"
   },
   "license": "Artistic-2.0",
   "tags": [
@@ -27,5 +27,5 @@
     "bittorrent",
     "torrent"
   ],
-  "source-url": "git://github.com/interlab/perl6-Bencoder"
+  "source-url": "git://github.com/interlab/p6-Bencoder"
 }

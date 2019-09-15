@@ -1,30 +1,31 @@
 {
-    "perl" : "6.c",
-    "name" : "Bencode",
-    "license" : "Artistic-2.0",
-    "version" : "0.5.2",
-    "description" : "Encode and Decode Bencoding data",
-    "authors" : [
-        "Innokentiy Shniperson"
-    ],
-    "provides" : {
-        "Bencode" : "lib/Bencode.pm6",
-        "Bencode::Dump" : "lib/Bencode/Dump.pm6",
-        "Bencode::Parse" : "lib/Bencode/Parse.pm6",
-        "Bencode::Util" : "lib/Bencode/Util.pm6",
-        "Bencode::TorrentInfo" : "lib/Bencode/TorrentInfo.pm6"
-    },
-    "depends" : [
-        "Digest::SHA"
-    ],
-    "support" : {
-        "bugtracker" : "https://github.com/interlab/perl6-Bencode/issues"
-    },
-    "tags" : [
-        "bencode",
-        "bdecode",
-        "bittorrent",
-        "torrent"
-    ],
-    "source-url" : "git://github.com/interlab/perl6-Bencode"
+  "name": "Bencoder",
+  "description": "Encode and Decode Bencoding data",
+  "version": "0.6",
+  "perl": "6.*",
+  "authors": [
+    "V. N."
+  ],
+  "auth": "github:interlab",
+  "depends": [
+    "Digest::SHA1::Native"
+  ],
+  "provides": {
+    "Bencoder": "lib/Bencoder.pm6",
+    "Bencoder::Dump": "lib/Bencoder/Dump.pm6",
+    "Bencoder::Parse": "lib/Bencoder/Parse.pm6",
+    "Bencoder::TorrentInfo": "lib/Bencoder/TorrentInfo.pm6",
+    "Bencoder::Util": "lib/Bencoder/Util.pm6"
+  },
+  "support": {
+    "bugtracker": "https://github.com/interlab/perl6-Bencoder/issues"
+  },
+  "license": "Artistic-2.0",
+  "tags": [
+    "bencode",
+    "bdecode",
+    "bittorrent",
+    "torrent"
+  ],
+  "source-url": "git://github.com/interlab/perl6-Bencoder"
 }

@@ -1,6 +1,6 @@
-use Bencode::Util;
+use Bencoder::Util;
 
-class Bencode::Dump
+class Bencoder::Dump
 {
     has Buf $!stack = Buf.new();
     has $!data;

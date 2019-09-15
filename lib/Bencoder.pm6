@@ -1,15 +1,15 @@
-unit module Bencode;
+unit module Bencoder;
 
-use Bencode::Dump;
-use Bencode::Parse;
-use Bencode::Util;
+use Bencoder::Dump;
+use Bencoder::Parse;
+use Bencoder::Util;
 
 sub bencode($data, $decode=False) is export
 {
     if $decode {
-        return Bencode::Dump.new(:$data).benc-dump().decode;
+        return Bencoder::Dump.new(:$data).benc-dump().decode;
     } else {
-        return Bencode::Dump.new(:$data).benc-dump();
+        return Bencoder::Dump.new(:$data).benc-dump();
     }
 }
 
@@ -22,7 +22,7 @@ sub bdecode($data, Bool $decodestr=False) is export
 {
     my Buf $bufdata = tobuf $data;
 
-    return Bencode::Parse.new(data => $bufdata, :$decodestr).parse();
+    return Bencoder::Parse.new(data => $bufdata, :$decodestr).parse();
 }
 
 sub bdecode-file(Str $fname) is export

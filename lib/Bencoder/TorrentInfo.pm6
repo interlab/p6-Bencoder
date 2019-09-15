@@ -1,46 +1,44 @@
-use Bencode;
+use Bencoder;
 use Digest::SHA;
 use experimental :pack;
 
 # htmlspecialchars
 # https://github.com/moznion/p6-HTML-Escape
-sub escape-html(Str $raw) returns Str
+sub escape-html(Str $raw --> Str)
 {
-    return $raw.trans([ '&', '<', '>', q{"}, q{'}, q{`}, '{', '}' ] =>  [
+    $raw.trans([ '&', '<', '>', q{"}, q{'}, q{`}, '{', '}' ] =>  [
         '&amp;', '&lt;',  '&gt;', '&quot;', '&#39;', '&#96;', '&#123;', '&#125;'
     ]);
 }
 
-class Bencode::TorrentInfo
+class Bencoder::TorrentInfo
 {
     has %!data;
 
     submethod BUILD(Str :$path)
     {
         %!data = bdecode-file($path);
-        if ! (%!data<info><pieces>.bytes %% 20) {
-            die 'Torrent incorrectly coded!';
-        }
+        die 'Torrent incorrectly coded!' unless %!data<info><pieces>.bytes %% 20;
     }
 
     method info-hash(Bool $bin=False)
     {
-        return $bin ?? sha1(bencode(%!data<info>))
+        $bin
+            ?? sha1(bencode(%!data<info>))
             !! sha1(bencode(%!data<info>)).unpack('H*').uc;
     }
 
     method num-files(--> Int)
     {
-        return self.file-list()<count>;
+        self.file-list()<count>;
     }
 
     method size(--> Int)
     {
-        return self.file-list()<size>;
+        self.file-list()<size>;
     }
 
-    # todo htmlspecialchars
-    method file-list()
+    method file-list(--> Hash)
     {
         my Int $fCount = 0;
         my Int $fSize = 0;
@@ -67,25 +65,22 @@ class Bencode::TorrentInfo
             @fList = @fList.sort({$^a<name> cmp $^b<name>});
         }
 
-        return {'count' => $fCount, 'size' => $fSize, 'files' => @fList};
+        {'count' => $fCount, 'size' => $fSize, 'files' => @fList};
     }
 
     method announce()
     {
-        if %!data<announce>:exists {
-            return escape-html(%!data<announce>.decode);
-        } else {
-            return Nil;
-        }
+        %!data<announce>:exists
+            ?? escape-html(%!data<announce>.decode)
+            !! Nil;
     }
 
-    method announce-list()
+    method announce-list(--> Array)
     {
         my @res;
         if %!data<announce>:exists {
             @res.push(escape-html(%!data<announce>.decode));
         }
-        # dd %!data<announce-list>;
         if %!data<announce-list>:exists {
             for %!data<announce-list>.values -> $val {
                 my $v = escape-html($val[0].decode);
@@ -93,15 +88,7 @@ class Bencode::TorrentInfo
                 @res.push($v);
             }
         }
+
         @res;
     }
 }
-
-# use Bencode::TorrentInfo;
-# my $path = 'F:\b\perl6-Bencode\examples\ubuntu-17.04-desktop-amd64.iso.torrent';
-# my $tor-info = Bencode::TorrentInfo.new(path => $path);
-# say $tor-info.info-hash;
-# say 'announce ', $tor-info.announce;
-# .say for $tor-info.announce-list;
-# say 'Файлов: ', $tor-info.num-files;
-# say $_<name> for $tor-info.file-list<files>.values;

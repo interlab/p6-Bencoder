@@ -1,4 +1,4 @@
-use Bencode::Util;
+use Bencoder::Util;
 
 # helper function via Str.index
 sub indexBuf(Buf $data, Str $key, Int $position --> Int)
@@ -28,7 +28,7 @@ sub substrBuf(Buf $data, Int $pos, Int $len --> Str)
     return $data.subbuf($pos, $len).decode('UTF-8');
 }
 
-class Bencode::Parse
+class Bencoder::Parse
 {
     has Buf $!data;
     has Int $!pos = 0;
